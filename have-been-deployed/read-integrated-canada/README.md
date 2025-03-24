@@ -119,11 +119,11 @@
 - 地点数が7239, 重複排除が2320地点
 
 - **元々のコードでの地図**
-![元々の地図](docs/images/map_old.png)
+![元々の地図](docs/images/canada_stations_old.png)
 -赤色は重複地点
 
 - **新しいコードでの地図**
-![新しい地図](docs/images/map_new.png)
+![新しい地図](docs/images/canada_stations_new.png)
 -赤色がない
 
 
