@@ -4,7 +4,7 @@
 このLambda関数は、デンマーク気象局（DMI: Danish Meteorological Institute）のAPI経由で取得した観測データを処理します。APIからJSON形式で取得したデータにRUヘッダーを追加してS3に保存した後、標準化されたJSONフォーマットに変換して別のS3バケットに保存します。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [DMI データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1BPBsn6UYEDRWf-U4SOrl1dxWSmO_7AEdrgKPas9b-UE/edit?gid=1848697441#gid=1848697441)
 
 ## 技術仕様

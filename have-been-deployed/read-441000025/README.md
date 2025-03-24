@@ -4,7 +4,7 @@
 このLambda関数は、オランダ気象局（KNMI）の観測生データ（NetCDF形式）を処理します。S3からSQSを通じてデータを受信し、RUヘッダーを削除した後、標準化されたJSONフォーマットに変換し、S3に保存します。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [KNMI データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/11X06dqibNCYOstbVhfgnNBuZ2cbdI9NOr6g13mUYSG4/edit?gid=1848697441#gid=1848697441)
 
 ## 技術仕様

@@ -4,7 +4,7 @@
 このLambda関数は、オランダ王立気象研究所（KNMI: Koninklijk Nederlands Meteorologisch Instituut）の観測局メタデータを処理します。S3からSQSを通じて受信したNetCDFファイルを解析し、GeoJSON形式に変換してS3に保存します。観測局の位置情報や基本属性を標準化された形式で提供します。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [KNMI データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1vMhRGCvwOaiklY5M6Ldm9P0AHrF0xgFBM4Ptg8ZxU38/edit?gid=20903742#gid=20903742)
 
 

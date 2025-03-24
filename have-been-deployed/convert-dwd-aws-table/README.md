@@ -4,7 +4,7 @@
 このLambda関数は、ドイツ気象局（DWD: Deutscher Wetterdienst）の観測局リストデータを処理します。S3からSQSを通じてテキスト形式のデータを受信し、RUヘッダーを削除した後、GeoJSON形式に変換してS3に保存します。このデータは観測局の位置情報、名称、稼働期間などの基本情報を含みます。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [DWD データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1P3x-w3AeOLF8Zixh4emQDWSqA_iEndvVmIal1-ksUHk/edit?gid=1071559637#gid=1071559637)
 
 

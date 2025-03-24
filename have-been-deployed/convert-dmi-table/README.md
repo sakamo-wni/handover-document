@@ -4,7 +4,7 @@
 このLambda関数は、デンマーク気象局（DMI: Danish Meteorological Institute）の観測局データを処理します。S3からSQSを通じてGeoJSON形式のデータを受信し、RUヘッダーを削除した後、重複を排除して最適化されたGeoJSON形式に変換してS3に保存します。このデータは観測局の位置情報、名称、稼働期間などの基本情報を含みます。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [DMI データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1qa_T825A87Shf2dTG3P6dV02AHY9XGdskKw9jXNG9Mk/edit?gid=492387665#gid=492387665)
 
 

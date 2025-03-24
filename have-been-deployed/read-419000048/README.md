@@ -4,7 +4,7 @@
 このLambda関数は、カナダ気象局（MSC: Meteorological Service of Canada）の観測データを処理します。すべての州・準州からXML形式の気象観測データを取得し、標準化されたJSONフォーマットに変換してS3に保存します。各州ごとの最新の気象データを統合し、統一された形式で提供します。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [MSC データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1BPBsn6UYEDRWf-U4SOrl1dxWSmO_7AEdrgKPas9b-UE/edit?gid=1848697441#gid=1848697441)
 
 

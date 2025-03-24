@@ -4,7 +4,7 @@
 このLambda関数は、ドイツ気象局（DWD: Deutscher Wetterdienst）のBUFR形式の気象観測データを処理します。指定URLからbz2圧縮されたデータをダウンロードし、解凍後にS3に保存します。また、BUFRデータを解析して標準化されたJSONフォーマットに変換し、観測データと観測局データとしてS3に保存します。
 
 ## PSR 資料
-このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+このプログラムのPSR資料については以下のURLを参照してください：
 [DWD データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1IVaVNpurbhv4xuKcWMTeeL4phHvMaMcPyfBRbq16UDU/edit?gid=1246498904#gid=1246498904)
 
 
