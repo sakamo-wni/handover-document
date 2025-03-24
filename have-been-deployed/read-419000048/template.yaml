@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+
+Parameters:
+  FunctionName:
+    Description: "set function name of Lambda."
+    Type: String
+    Default: "read-419000048" 
+  
+  WeatherBaseUrl:
+    Type: String
+    Default: "https://dd.weather.gc.ca/observations/xml"
+    Description: "Base URL for weather observations"
+  
+  tagid:
+    Description: "tagid"
+    Type: String
+
+  SaveBucket:
+    Description: "set environment variable 'save_bucket' of lambda."
+    Type: String 
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures:
+      - arm64
+    Timeout: 300
+    CodeUri: app/
+    Environment:
+      Variables:
+        "save_bucket": !Ref SaveBucket
+        "WEATHER_BASE_URL": !Ref WeatherBaseUrl
+        "tagid": !Ref tagid
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${FunctionName}"
+      RetentionInDays: 14
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${FunctionName}"
+      Handler: main.main
+      Description: "create JSON file from Canada MSC AWS Observation Data" 
+      MemorySize: 256
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref SaveBucket 
+      Events:
+        Schedule1:
+          Type: Schedule
+          Properties:
+            Name: !Sub "${FunctionName}-rule"
+            Enabled: true
+            Schedule: cron(0 * * * ? *)  # CHANGED
+
+Outputs:
+  FunctionName:
+    Description: "lambda function name."
+    Value: !Ref FunctionName
+  
+  LogGroup:
+    Description: "CloudWatchLogs."
+    Value: !Ref LogGroup

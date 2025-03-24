@@ -3,6 +3,11 @@
 ## 概要
 このLambda関数は、ドイツ気象局（DWD: Deutscher Wetterdienst）の10分間隔観測データを処理します。複数の気象要素カテゴリ（気温、風、降水量など）のZIPファイルをダウンロードし、各観測所の最新データを抽出して統合し、標準化されたJSONフォーマットに変換してS3に保存します。
 
+## PSR 資料
+このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+[DWD データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1IVaVNpurbhv4xuKcWMTeeL4phHvMaMcPyfBRbq16UDU/edit?gid=1246498904#gid=1246498904)
+
+
 ## 技術仕様
 - **ランタイム**: Python 3.12
 - **実行環境**: AWS Lambda

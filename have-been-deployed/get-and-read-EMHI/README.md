@@ -3,6 +3,11 @@
 ## 概要
 このLambda関数は、エストニア気象局（EMHI）の観測生データ（XML形式）を処理します。指定URLからデータをダウンロードし、RUヘッダーを追加してS3に保存した後、JSONフォーマットに変換してS3に保存します。観測データと観測局データの両方を処理する機能を持っています。
 
+## PSR 資料
+このプログラムのPSR資料（問題特定書）については以下のURLを参照してください：
+[EMHI データ処理 PSR 資料](https://docs.google.com/spreadsheets/d/1nEc6D-uyFETIsW0lhUOOHOifWAX43brOT5hSyBWQ-ys/edit?gid=492387665#gid=492387665)
+
+
 ## 技術仕様
 - **ランタイム**: Python 3.12
 - **実行環境**: AWS Lambda
