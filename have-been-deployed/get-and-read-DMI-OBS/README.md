@@ -4,7 +4,7 @@
 このLambda関数は、デンマーク気象局（DMI: Danish Meteorological Institute）のAPI経由で取得した観測データを処理します。APIからJSON形式で取得したデータにRUヘッダーを追加してS3に保存した後、標準化されたJSONフォーマットに変換して別のS3バケットに保存します。
 
 ## 技術仕様
-- **ランタイム**: Python 3.x
+- **ランタイム**: Python 3.12
 - **実行環境**: AWS Lambda
 - **入力ソース**: DMI の Web API
 - **出力先**: 

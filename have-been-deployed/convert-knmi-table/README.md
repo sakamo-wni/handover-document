@@ -4,7 +4,7 @@
 このLambda関数は、オランダ王立気象研究所（KNMI: Koninklijk Nederlands Meteorologisch Instituut）の観測局メタデータを処理します。S3からSQSを通じて受信したNetCDFファイルを解析し、GeoJSON形式に変換してS3に保存します。観測局の位置情報や基本属性を標準化された形式で提供します。
 
 ## 技術仕様
-- **ランタイム**: Python 3.x
+- **ランタイム**: Python 3.12
 - **実行環境**: AWS Lambda
 - **入力ソース**: SQS (S3からのデータを含む)
 - **出力先**: S3
