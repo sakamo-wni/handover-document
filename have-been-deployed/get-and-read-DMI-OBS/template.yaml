@@ -1,0 +1,109 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+
+Parameters:
+  FunctionName:
+    Description: "set function name of Lambda."
+    Type: String
+    Default: "get-and-read-DMI-OBS"
+  
+  URL:
+    Description: "URL of DMI-OBS-AWS-raw"
+    Type: String
+  
+  tagid:
+    Description: "tagid"
+    Type: String
+  
+  APIKey:
+    Description: "API Key of the URL"
+    Type: String
+  
+  RawDataBucket:
+    Description: "set environment variable 'raw_data_bucket' of lambda (eu-central-1)."
+    Type: String
+  
+  ConvertedBucket:
+    Description: "set environment variable 'converted_bucket' of lambda (ap-northeast-1)."
+    Type: String
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures:
+      - arm64
+    Timeout: 300
+    CodeUri: app/
+    Environment:
+      Variables:
+        "RawDataBucket": !Ref RawDataBucket
+        "ConvertedBucket": !Ref ConvertedBucket
+        "URL": !Ref URL
+        "APIKey": !Ref APIKey
+        "tagid": !Ref tagid
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${FunctionName}"
+      RetentionInDays: 14
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Sub "${FunctionName}-S3CrossRegionAccess"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${RawDataBucket}/*"
+                  - !Sub "arn:aws:s3:::${RawDataBucket}"
+                  - !Sub "arn:aws:s3:::${ConvertedBucket}/*"
+                  - !Sub "arn:aws:s3:::${ConvertedBucket}"
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${FunctionName}"
+      Handler: main.main
+      Description: "ingest DMI Danish AWS Data and Convert it into JSON format"
+      MemorySize: 512
+      Role: !GetAtt LambdaExecutionRole.Arn  
+      Events:
+        Schedule1:
+          Type: Schedule
+          Properties:
+            Name: !Sub "${FunctionName}-rule"
+            Enabled: true
+            Schedule: cron(1/10 * * * ? *)
+
+
+Outputs:
+  FunctionName:
+    Description: "lambda function name."
+    Value: !Ref FunctionName
+  
+  LogGroup:
+    Description: "CloudWatchLogs."
+    Value: !Ref LogGroup
+  
+  RoleARN:
+    Description: "IAM Role ARN"
+    Value: !GetAtt LambdaExecutionRole.Arn

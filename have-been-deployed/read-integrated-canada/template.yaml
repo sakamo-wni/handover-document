@@ -1,0 +1,146 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+
+Parameters:
+  FunctionName:
+    Description: "set function name of Lambda."
+    Type: String
+    Default: 'read-integrated-canada'
+
+  MDBucket:
+    Description: "set environment variable 'metadata_bucket' of lambda."
+    Type: String
+  
+  StockS3:
+    Description: "set lambda environment variable of stock on S3 bucket."
+    Type: String
+    Default: wni-wfc-stock-ane1
+
+  LambdaSecurityGroup:
+    Type: String
+    Default: sg-05039cc5f8306b939
+
+  PrivateSubnet1:
+    Type: String
+    Default: subnet-04d708d68e936f644
+
+  PrivateSubnet2:
+    Type: String
+    Default: subnet-0b03c2d3196bd7ab9
+
+  PrivateSubnet3:
+    Type: String
+    Default: subnet-07f4360405f9edc46
+
+  EventSnsTopicsArn1:
+    Description: "set SNS ARN of stock_on_s3 for first source."
+    Type: String
+    Default: arn:aws:sns:ap-northeast-1:928225274854:TagID-419000050  #aws
+
+  EventSnsTopicsArn2:
+    Description: "set SNS ARN of stock_on_s3 for second source."
+    Type: String
+    Default: arn:aws:sns:ap-northeast-1:928225274854:TagID-419000051  #climate
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 60
+    CodeUri: app/
+    Environment:
+      Variables:
+        "md_bucket" : !Ref MDBucket
+        "stock_s3" : !Ref StockS3
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${FunctionName}"
+      RetentionInDays: 30
+  
+  Queue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 60
+      QueueName: !Sub "${FunctionName}-sqs"
+  
+  QueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: 1
+            Effect: Allow
+            Principal: "*"
+            Action:
+               - "sqs:*"
+            Resource: !GetAtt Queue.Arn
+          - Sid: 2
+            Effect: Allow
+            Principal: "*"
+            Action: sqs:SendMessage
+            Resource: !GetAtt Queue.Arn
+            Condition:
+              ArnLike:
+                aws:SourceArn:
+                  - !Ref EventSnsTopicsArn1
+                  - !Ref EventSnsTopicsArn2
+      Queues:
+        - !Ref Queue
+
+  SubscriptionFirst:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      Endpoint: !GetAtt Queue.Arn
+      TopicArn: !Ref EventSnsTopicsArn1
+      FilterPolicy: 
+        time_diff: 
+          - 
+            numeric: 
+              - <=
+              - 3600
+
+  SubscriptionSecond:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      Endpoint: !GetAtt Queue.Arn
+      TopicArn: !Ref EventSnsTopicsArn2
+      FilterPolicy: 
+        time_diff: 
+          - 
+            numeric: 
+              - <=
+              - 3600
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${FunctionName}"
+      Handler: main.main
+      Description: "ingest and integrate AWS stations from Meteorological Service of Canada (MSC)" 
+      MemorySize: 256
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref StockS3
+        - S3CrudPolicy:
+            BucketName: !Ref MDBucket
+      Environment:
+        Variables:
+          region_name: "ap-northeast-1"
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt Queue.Arn
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref LambdaSecurityGroup
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+          - !Ref PrivateSubnet3

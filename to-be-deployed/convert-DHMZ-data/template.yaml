@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >
+  A unified AWS Serverless template describing one Lambda ("get-and-read-EMHI") 
+  that is triggered every 10 minutes (for observations) and daily at 0:00 UTC (for stations).
+
+Parameters:
+  FunctionName:
+    Description: "Name of the unified Lambda function."
+    Type: String
+    Default: "convert-DHMZ-data"
+
+  URL:
+    Description: "URL of DMHZ data (observations/station) - same or separate logic in the code."
+    Type: String
+
+  tagid:
+    Description: "tagid"
+    Type: String
+
+  ConvertedBucket:
+    Description: "Bucket name in ap-northeast-1 to store converted data."
+    Type: String
+  RawDataBucket:
+    Description: "Bucket name in ap-northeast-1 to store raw data."
+    Type: String
+
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures:
+      - arm64
+    Timeout: 300
+    CodeUri: app/
+    Environment:
+      Variables:
+        ConvertedBucket: !Ref ConvertedBucket
+        RawDataBucket: !Ref RawDataBucket 
+        URL: !Ref URL
+        tagid: !Ref tagid
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${FunctionName}"
+      RetentionInDays: 14
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: !Sub "${FunctionName}-policy"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - !Sub "arn:aws:s3:::${ConvertedBucket}/*"
+                  - !Sub "arn:aws:s3:::${ConvertedBucket}"
+                  - !Sub "arn:aws:s3:::${RawDataBucket}/*"
+                  - !Sub "arn:aws:s3:::${RawDataBucket}"
+
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      Handler: main.main
+      Description: "Unified Lambda to ingest DHMZ Estonian data (OBS & Stations), convert & store."
+      MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        # 観測データは1時間おき。rawは観測と地点データで共通なのでこちらだけ
+        ObservationSchedule:
+          Type: Schedule
+          Properties:
+            Name: !Sub "${FunctionName}-ObservationRule"
+            Enabled: true
+            Schedule: cron(0 * * * ? *)  # 毎時00分
+
+        # 地点データは1日1回 (0:00 UTC)に保存する
+        StationSchedule:
+          Type: Schedule
+          Properties:
+            Name: !Sub "${FunctionName}-StationRule"
+            Enabled: true
+            Schedule: cron(0 0 * * ? *)
+
+Outputs:
+  FunctionName:
+    Description: "Lambda function name."
+    Value: !Ref FunctionName
+
+  LogGroup:
+    Description: "CloudWatch Logs LogGroup name."
+    Value: !Ref LogGroup
+
+  RoleARN:
+    Description: "IAM Role ARN used by the Lambda."
+    Value: !GetAtt LambdaExecutionRole.Arn

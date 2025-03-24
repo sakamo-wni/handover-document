@@ -1,0 +1,43 @@
+version = 0.1
+
+[dev]
+[dev.deploy]
+[dev.global.parameters]
+stack_name = "get-and-read-DMI-OBS"
+
+[dev.deploy.parameters]
+s3_bucket = "wni-expo-lambda-function-434834903063-eu-central-1"
+s3_prefix = "get-and-read-DMI-OBS"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "RawDataBucket=wni-dev-expo-data-ingest-workspace-eu-central-1 ConvertedBucket=wni-wds-dev-global-aqc-apne1 tagid=441000125 URL=https://dmigw.govcloud.dk/v2/metObs/collections/observation/items APIKey=4ed8a708-655b-4e9f-97d1-154b2f1a958e"
+
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSDEV\"",
+  "Function=\"wds-data-ingest\"",
+  "TagID-IN=\"441000125\"",
+  "Administrator=\"sakamo\""
+]
+
+[prod]
+[prod.deploy]
+[prod.global.parameters]
+stack_name = "get-and-read-DMI-OBS"
+
+[prod.deploy.parameters]
+s3_bucket = "wni-expo-lambda-function-530735221505-eu-central-1"
+s3_prefix = "get-and-read-DMI-OBS"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "RawDataBucket=wni-prod-expo-data-ingest-workspace-eu-central-1 ConvertedBucket=wni-wds-prod-global-aqc-apne1 tagid=441000125 URL=https://dmigw.govcloud.dk/v2/metObs/collections/observation/items APIKey=4ed8a708-655b-4e9f-97d1-154b2f1a958e"
+
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSDEV\"",
+  "Function=\"wds-data-ingest\"",
+  "TagID-IN=\"441000125\"",
+  "Administrator=\"sakamo\""
+]

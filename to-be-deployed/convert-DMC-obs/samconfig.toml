@@ -1,0 +1,57 @@
+version = 0.1
+
+[dev]
+[dev.deploy]
+[dev.global.parameters]
+stack_name = "convert-DMC-obs"
+
+[dev.deploy.parameters]
+resolve_s3 = true
+s3_prefix = "convert-DMC-obs"
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides=[
+  "MDBucket=wni-wds-dev-global-aqc-apne1",
+  "tagid=460320021"
+  ]
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSQLT\"",
+  "Function=\"wds-data-qc\"",
+  "TagID-IN=\"460320021\"",
+  "Administrator=\"sakamo\""
+]
+image_repositories = []
+
+
+
+
+[prod]
+[prod.deploy]
+[prod.global.parameters]
+stack_name = "convert-DMC-obs"
+[prod.deploy.parameters]
+resolve_s3 = true
+s3_prefix = "convert-DMC-obs"
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides=[
+  "MDBucket=wni-wds-prod-global-aqc-apne1",
+  "LambdaSecurityGroup=sg-0bb1b3a3db98e55fe",
+  "PrivateSubnet1=subnet-0c889a5e97e32db9e",
+  "PrivateSubnet2=subnet-0e86cbeacfd4d8ae9",
+  "PrivateSubnet3=subnet-0ccdc645fc107d367",
+  "tagid=460320021"
+  ]
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSQLT\"",
+  "Function=\"wds-data-qc\"",
+  "TagID-IN=\"460320021\"",
+  "Administrator=\"sakamo\""
+]
+
+disable_rollback = true
+image_repositories = []

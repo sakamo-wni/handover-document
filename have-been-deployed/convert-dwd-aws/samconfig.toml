@@ -1,0 +1,43 @@
+version = 0.1
+
+[dev]
+[dev.deploy]
+[dev.global.parameters]
+stack_name = "convert-dwd-aws"
+
+[dev.deploy.parameters]
+resolve_s3 = true
+s3_prefix = "convert-dwd-aws"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "RawDataBucket=wni-dev-data-ingest-stock-ap-northeast-1 ConvertedBucket=wni-wds-dev-global-aqc-apne1 tagid=442000057 URL=https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/"
+
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSQLT\"",
+  "Function=\"wds-data-qc\"",
+  "TagID-OUT=\"442000057\"",
+  "Administrator=\"sakamo\""
+]
+
+[prod]
+[prod.deploy]
+[prod.global.parameters]
+stack_name = "convert-dwd-aws"
+
+[prod.deploy.parameters]
+resolve_s3 = true
+s3_prefix = "convert-dwd-aws"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_NAMED_IAM"
+parameter_overrides = "RawDataBucket=wni-data-ingest-stock-ap-northeast-1 ConvertedBucket=wni-wds-prod-global-aqc-apne1 tagid=442000057 URL=https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/"
+
+tags = [
+  "map-migrated=\"migMCX7KD5RU8\"",
+  "Cost=\"WDSQLT\"",
+  "Function=\"wds-data-qc\"",
+  "TagID-OUT=\"442000057\"",
+  "Administrator=\"sakamo\""
+]
